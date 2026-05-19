@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.jamal.ecommerce_project.dto.ProductDTO;
 import com.jamal.ecommerce_project.model.Product;
 import com.jamal.ecommerce_project.service.ProductService;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -28,10 +29,23 @@ public class ProductController {
 @Autowired
 private ProductService service;
 
+//@GetMapping("/products")
+//public ResponseEntity< List<Product>> getAllProducts(){
+//	
+//	return new ResponseEntity<>(service.getAllProducts(),HttpStatus.OK);}
+
+//🟢 Upgraded endpoint to serve the lightweight DTO collection instead of the full entity objects
 @GetMapping("/products")
-public ResponseEntity< List<Product>> getAllProducts(){
-	
-	return new ResponseEntity<>(service.getAllProducts(),HttpStatus.OK);}
+public ResponseEntity<List<ProductDTO>> getAllProducts() {
+	try {
+		// 🟢 Fixed: Updated method name call to match what you wrote in ProductService
+		List<ProductDTO> products = service.getAllProductsWithoutImages();
+		return new ResponseEntity<>(products, HttpStatus.OK);
+	} catch (Exception e) {
+		System.err.println("Error pulling optimized catalog collection: " + e.getMessage());
+		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+}
 @GetMapping("/product/{id}")
 public  ResponseEntity< Product> getProductByName(@PathVariable int id) {
 	Product product= service.getProductById( id);
