@@ -1,11 +1,12 @@
-# Step 1: Use an official lightweight OpenJDK image as the base environment
-FROM openjdk:17-jdk-slim
-
-# Step 2: Set the working directory inside the cloud container
+# Stage 1: Build the Maven application inside Render's cloud container
+FROM maven:3.8.5-openjdk-17 AS build
 WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
 
-# Step 3: Copy your successful local .jar build from target/ into the container
-COPY target/ecommerce_project-0.0.1-SNAPSHOT.jar app.jar
-
-# Step 4: Define the launch instruction to fire up the Spring Boot app
+# Stage 2: Create the final lightweight production runtime environment
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY --from=build /app/target/ecommerce_project-0.0.1-SNAPSHOT.jar app.jar
+EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
