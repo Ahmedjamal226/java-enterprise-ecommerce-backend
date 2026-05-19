@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.jamal.ecommerce_project.dto.ProductDTO;
 import com.jamal.ecommerce_project.model.Product;
 import com.jamal.ecommerce_project.repo.ProductRepo;
 @Service
@@ -17,11 +18,15 @@ public class ProductService {
 	@Autowired
 	private ProductRepo repo;
 	
-	public List<Product> getAllProducts() {
-		// TODO Auto-generated method stub
-		 return repo.findAll();
+//	public List<Product> getAllProducts() {
+//		// TODO Auto-generated method stub
+//		 return repo.findAll();
+//	}
+	public List<ProductDTO> getAllProductsWithoutImages() {
+		return repo.findAllWithoutImageData();
 	}
-
+	
+	
 	public Product getProductById(int id) {
 		// TODO Auto-generated method stub
 		return repo.findById(id).orElse(null);
@@ -52,8 +57,9 @@ public class ProductService {
 
 	public List<Product> searchProducts(String keyword) {
 		return repo.searchProducts(keyword);
-	}
-	}
+	}}
+
+	
 
 	
 	
